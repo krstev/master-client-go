@@ -1,0 +1,23 @@
+{
+  "instance": {
+    "app": "go-client",
+    "hostName": "${ipAddress}",
+    "ipAddr": "${ipAddress}",
+    "port": {
+      "$": "${port}",
+      "@enabled": true
+    },
+    "homePageUrl": "http://${ipAddress}:${port}/",
+    "statusPageUrl": "http://${ipAddress}:${port}/info",
+    "healthCheckUrl": "http://${ipAddress}:${port}/health",
+    "vipAddress": "test.com",
+    "dataCenterInfo": {
+      "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
+      "name": "MyOwn"
+    },
+    "status": "UP",
+    "metadata": {
+      "instanceId": "go-client:${instanceId}"
+    }
+  }
+}
