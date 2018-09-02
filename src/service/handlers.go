@@ -13,7 +13,7 @@ var wg sync.WaitGroup
 
 const serviceAppID = "service"
 const minikubeService = "minikube-service"
-const timeoutMilliseconds = 300
+const timeoutMilliseconds = 500
 
 func Index(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "Welcome!\n")
@@ -48,11 +48,11 @@ func v2PrimeNumbers(w http.ResponseWriter, r *http.Request) {
 }
 
 func v1CountVowels(w http.ResponseWriter, r *http.Request) {
-	CountVowels(w,r,getV1InstanceUrls())
+	CountVowels(w, r, getV1InstanceUrls())
 }
 
 func v2CountVowels(w http.ResponseWriter, r *http.Request) {
-	CountVowels(w,r,getV2InstanceUrls())
+	CountVowels(w, r, getV2InstanceUrls())
 }
 
 func GoogleSearch(w http.ResponseWriter, r *http.Request) {
@@ -84,9 +84,9 @@ func googleQueryTimeout(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		panic(err)
 	}
-	go searchWeb(c, request.Search, v1ApiVersion)
-	go searchImage(c, request.Search, v1ApiVersion)
-	go searchVideo(c, request.Search, v1ApiVersion)
+	go searchWeb(c, request.Search, v2ApiVersion)
+	go searchImage(c, request.Search, v2ApiVersion)
+	go searchVideo(c, request.Search, v2ApiVersion)
 
 	timeout := time.After(timeoutMilliseconds * time.Millisecond)
 
@@ -98,7 +98,7 @@ func googleQueryTimeout(w http.ResponseWriter, r *http.Request) {
 			results += result
 		case <-timeout:
 			results = "Timeout"
-			return
+			break
 		}
 	}
 
@@ -129,6 +129,7 @@ func googleQueryTimeoutReplica(w http.ResponseWriter, r *http.Request) {
 			results += result
 		case <-timeout:
 			results = "Timeout"
+			break
 		}
 	}
 
@@ -137,4 +138,3 @@ func googleQueryTimeoutReplica(w http.ResponseWriter, r *http.Request) {
 	}
 	logEnd(startTime)
 }
-

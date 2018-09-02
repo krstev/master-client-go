@@ -3,13 +3,13 @@ package service
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"github.com/ArthurHlt/go-eureka-client/eureka"
+	"io/ioutil"
 	"master-client-go/src/model"
 	"math/rand"
 	"net/http"
 	"strconv"
-	"io/ioutil"
-	"fmt"
 	"time"
 )
 
@@ -48,7 +48,6 @@ func getVowels(ch chan int64, instaceUrl, text string) {
 	defer wg.Done()
 	url := instaceUrl + "countVowels?text=" + text
 	resp, _ := http.Get(url)
-
 	buf := new(bytes.Buffer)
 	buf.ReadFrom(resp.Body)
 	i, _ := strconv.ParseInt(buf.String(), 10, 64)
@@ -94,7 +93,7 @@ func searchVideo(c chan string, search string, apiVersion string) {
 
 func googleSearch(c chan string, search string, media string, apiVersion string) {
 
-	url := getRandomServiceInstance() + "/google/" + apiVersion + "/" + media + "?search" + search
+	url := getRandomServiceInstance() + "/google/" + apiVersion + "/" + media + "?search=" + search
 	resp, _ := http.Get(url)
 	defer resp.Body.Close()
 
@@ -113,7 +112,7 @@ func getV1InstanceUrls() []string {
 	return result
 }
 
-func getV2InstanceUrls() [] string {
+func getV2InstanceUrls() []string {
 	var result []string
 	url := "http://127.0.0.1:8000/api/v1/namespaces/default/endpoints/" + minikubeService
 	resp, _ := http.Get(url)
@@ -123,7 +122,7 @@ func getV2InstanceUrls() [] string {
 	return result
 }
 
-func PrimeNumbers(w http.ResponseWriter, r *http.Request, urls []string){
+func PrimeNumbers(w http.ResponseWriter, r *http.Request, urls []string) {
 	startTime := logStart()
 	defer r.Body.Close()
 	var request model.PrimeRequest
@@ -169,7 +168,7 @@ func PrimeNumbers(w http.ResponseWriter, r *http.Request, urls []string){
 	logEnd(startTime)
 }
 
-func CountVowels(w http.ResponseWriter, r *http.Request,urls []string){
+func CountVowels(w http.ResponseWriter, r *http.Request, urls []string) {
 	startTime := logStart()
 
 	defer r.Body.Close()
@@ -229,4 +228,3 @@ func logEnd(startTime time.Time) {
 	fmt.Println("End time : ", endTime)
 	fmt.Println("Total : ", endTime.Sub(startTime).String())
 }
-
